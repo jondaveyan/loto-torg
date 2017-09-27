@@ -3,6 +3,12 @@
 p {
 	font-size: 17px;
 }
+.padding-bottom {
+	padding-bottom: 50px;
+}
+.padding-top-150 {
+	padding-top: 150px;
+}
 #myTabContent .tab-pane {
 	padding-top: 20px;
 	padding-left: 20px;
@@ -365,8 +371,26 @@ p {
     text-transform: none;
     cursor: pointer;
 }
+a:link {
+    color: #ffff4a;
+}
+
+/* visited link */
+a:visited {
+    color: #ffff4a;
+}
+
+/* mouse over link */
+a:hover {
+    color: #ffff4a;
+}
+
+/* selected link */
+a:active {
+    color: #ffff4a;
+}
 #bs-example-navbar-collapse-1 ul.navbar-nav {
-	padding-left: 200px;
+	padding-left: 180px;
 	font-family: Comfortaa;
 }
 .navbar-brand {
