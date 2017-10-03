@@ -21,8 +21,8 @@ $email_subject = "Loto-torg";
 $name = $_POST['name']; // required
 $tel = $_POST['tel']; // required
 
-$email_message = "Клиент по имени <b>".$name."</b> запросил звонок.\n";
-$email_message .= "Вот его номер телефона: <b>".$tel."</b>.\n";
+$email_message = "Клиент по имени <b>".$name."</b> запросил звонок.<br>";
+$email_message .= "Вот его номер телефона: <b>".$tel."</b>.<br>";
 
 $mail->setFrom('jon.daveyan@gmail.com');
 $mail->addReplyTo('jon.daveyan@gmail.com');
@@ -34,7 +34,7 @@ try {
   $mail->send();
     echo json_encode(array('success' => true));
 } catch (Exception $e) {
-    echo json_encode(array('error' => $e));
+    echo json_encode(array('error' => $mail->ErrorInfo));
 }
  
 ?>
