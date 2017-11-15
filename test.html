@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pamynet test</title>
+</head>
+<body>
+
+
+<form id="authorize-form"
+	method="POST"
+	action="./nocontent.php">
+	<input type="hidden" name="dataValue" id="dataValue" />
+	<input type="hidden" name="dataDescriptor" id="dataDescriptor" />
+	<button type="button"
+		id="authorize-button"
+		class="AcceptUI"
+		data-billingAddressOptions='{"show":true, "required":false}' 
+		data-apiLoginId="5FvG7uX57x" 
+		data-clientKey="943b83xz82Ny8E3Xn7bRmALM28RvZbvd4TfrAhkd7XGk73CG9bPdq7e3Tj7wyPau"
+		data-acceptUIFormBtnTxt="Submit"
+		data-amount=""
+		data-acceptUIFormHeaderTxt="Credit Card Information" 
+		data-responseHandler="responseHandler">Pay
+	</button>
+</form>
+
+<form action="./nocontent.php" method="POST">
+<script
+  id="stripe-button"
+  src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+  data-key="pk_test_MxHIgUTX2f5DXx3MwlH21ZPW"
+  data-amount=""
+  data-name="Stripe.com"
+  data-description="2 widgets"
+  data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+  data-locale="auto"
+  data-zip-code="true">
+</script>
+</form>
+<div id="paypal-button-container"></div>
+
+</body>
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript"
+	src="https://jstest.authorize.net/v3/AcceptUI.js"
+	charset="utf-8">
+</script>
+<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+<script type="text/javascript">
+
+var url_string = window.location.href;
+var url = new URL(url_string);
+var promo = url.searchParams.get("promo");
+var name = url.searchParams.get("name");
+
+document.addEventListener('DOMContentLoaded', function(){
+	
+	var stripeButton = document.getElementById("stripe-button"); 
+  	stripeButton.setAttribute("data-amount", promo); 
+  	var authorizeButton = document.getElementById("authorize-button");
+  	authorizeButton.setAttribute("data-amount", promo); 
+});
+	
+window.onbeforeunload = function(){
+	var token = document.getElementsByName('stripeToken')[0].value;
+	var ajax = new XMLHttpRequest();
+
+	// Seta tipo de requisição: Post e a URL da API
+	ajax.open("POST", "./charge.php", true);
+	ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+	// Seta paramêtros da requisição e envia a requisição
+	ajax.send("stripeToken="+token+"&amount="+promo+"&name="+name);
+
+	// Cria um evento para receber o retorno.
+	ajax.onreadystatechange = function() {
+	  
+	  // Caso o state seja 4 e o http.status for 200, é porque a requisiçõe deu certo.
+		if (ajax.readyState == 4 && ajax.status == 200) {
+	    
+			var data = ajax.responseText;
+			
+	    // Retorno do Ajax
+			console.log(data);
+		}
+	}
+};
+
+paypal.Button.render({
+
+            env: 'sandbox', // sandbox | production
+
+            // PayPal Client IDs - replace with your own
+            // Create a PayPal app: https://developer.paypal.com/developer/applications/create
+            client: {
+                sandbox:    'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R',
+                production: '<insert production client id>'
+            },
+
+            // Show the buyer a 'Pay Now' button in the checkout flow
+            commit: true,
+
+            // payment() is called when the button is clicked
+            payment: function(data, actions) {
+
+                // Make a call to the REST api to create the payment
+                return actions.payment.create({
+                    payment: {
+                        transactions: [
+                            {
+                                amount: { total: promo, currency: 'USD' }
+                            }
+                        ]
+                    }
+                });
+            },
+
+            // onAuthorize() is called when the buyer approves the payment
+            onAuthorize: function(data, actions) {
+
+                // Make a call to the REST api to execute the payment
+                return actions.payment.execute().then(function() {
+                    window.alert('Payment Complete!');
+                });
+            }
+
+        }, '#paypal-button-container');
+
+</script>
+</html>
+
+<!-- Authorize
+API LOGIN ID - 5FvG7uX57x
+TRANSACTION KEY - 3j54BXb69GmAD5yg
+SECRET KEY - Simon -->
+
+<!-- xxxx.com/promo=199&name=Trip -->
