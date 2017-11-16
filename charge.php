@@ -1,4 +1,5 @@
 <?php 
+echo "json_encode(array('res' => 'result'))"; die();
 require 'vendor/autoload.php';
 use \Stripe\Stripe;
 \Stripe\Stripe::setApiKey("sk_test_8mZDec0191R8FdPu2ZuotKsO");
